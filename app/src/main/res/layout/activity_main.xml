@@ -24,7 +24,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         app:layout_constraintBottom_toTopOf="@id/published"
-        app:layout_constraintEnd_toStartOf="@id/menu"
+        app:layout_constraintEnd_toStartOf="@id/menuButton"
         app:layout_constraintStart_toEndOf="@id/avatar"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@sample/posts.json/data/author" />
@@ -42,14 +42,15 @@
         app:layout_constraintTop_toBottomOf="@id/author"
         tools:text="@sample/posts.json/data/published" />
 
-    <ImageView
-        android:id="@+id/menu"
-        android:layout_width="@dimen/icons_size"
-        android:layout_height="@dimen/icons_size"
+    <ImageButton
+        android:id="@+id/menuButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_menu_24dp"
-        tools:ignore="ContentDescription" />
+        app:srcCompat="@drawable/ic_menu_24" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/topBarrier"
@@ -76,74 +77,77 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="content" />
 
-    <ImageView
-        android:id="@+id/likes"
-        android:layout_width="@dimen/icons_size"
-        android:layout_height="@dimen/icons_size"
+    <ImageButton
+        android:id="@+id/likeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_spacing"
         android:contentDescription="@string/likes"
-        app:layout_constraintEnd_toStartOf="@id/countLikes"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toStartOf="@id/likeCount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bottomBarrier"
-        app:srcCompat="@drawable/ic_likes_24dp" />
+        app:srcCompat="@drawable/ic_like_24" />
 
     <TextView
-        android:id="@+id/countLikes"
+        android:id="@+id/likeCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/indent_size"
         android:layout_marginTop="@dimen/common_spacing"
         android:maxLines="1"
-        app:layout_constraintBottom_toBottomOf="@id/likes"
-        app:layout_constraintEnd_toStartOf="@id/reposts"
-        app:layout_constraintStart_toEndOf="@id/likes"
+        app:layout_constraintBottom_toBottomOf="@id/likeButton"
+        app:layout_constraintEnd_toStartOf="@id/shareButton"
+        app:layout_constraintStart_toEndOf="@id/likeButton"
         app:layout_constraintTop_toBottomOf="@id/bottomBarrier"
-        tools:text="@sample/posts.json/data/countLikes" />
+        tools:text="@sample/posts.json/data/likeCount" />
 
-    <ImageView
-        android:id="@+id/reposts"
-        android:layout_width="@dimen/icons_size"
-        android:layout_height="@dimen/icons_size"
+    <ImageButton
+        android:id="@+id/shareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/indent_size"
         android:layout_marginTop="@dimen/common_spacing"
         android:contentDescription="@string/reposts"
-        app:layout_constraintEnd_toStartOf="@id/countReposts"
-        app:layout_constraintStart_toEndOf="@id/countLikes"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toStartOf="@id/shareCount"
+        app:layout_constraintStart_toEndOf="@id/likeCount"
         app:layout_constraintTop_toBottomOf="@id/bottomBarrier"
-        app:srcCompat="@drawable/ic_reposts_24dp" />
+        app:srcCompat="@drawable/ic_share_24" />
 
     <TextView
-        android:id="@+id/countReposts"
+        android:id="@+id/shareCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/indent_size"
         android:layout_marginTop="@dimen/common_spacing"
         android:maxLines="1"
-        app:layout_constraintBottom_toBottomOf="@id/reposts"
-        app:layout_constraintStart_toEndOf="@id/reposts"
+        app:layout_constraintBottom_toBottomOf="@id/shareButton"
+        app:layout_constraintStart_toEndOf="@id/shareButton"
         app:layout_constraintTop_toBottomOf="@id/bottomBarrier"
-        tools:text="@sample/posts.json/data/countReposts" />
+        tools:text="@sample/posts.json/data/shareCount" />
 
-    <ImageView
-        android:id="@+id/views"
-        android:layout_width="@dimen/icons_size"
-        android:layout_height="@dimen/icons_size"
+    <ImageButton
+        android:id="@+id/viewsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_spacing"
         android:layout_marginEnd="@dimen/indent_size"
         android:contentDescription="@string/views"
-        app:layout_constraintEnd_toStartOf="@id/countViews"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toStartOf="@id/viewsCount"
         app:layout_constraintTop_toBottomOf="@id/bottomBarrier"
-        app:srcCompat="@drawable/ic_views_24dp" />
+        app:srcCompat="@drawable/ic_views_24" />
 
     <TextView
-        android:id="@+id/countViews"
+        android:id="@+id/viewsCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_spacing"
         android:maxLines="1"
-        app:layout_constraintBottom_toBottomOf="@id/views"
+        app:layout_constraintBottom_toBottomOf="@id/viewsButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bottomBarrier"
-        tools:text="@sample/posts.json/data/countViews" />
+        tools:text="@sample/posts.json/data/viewsCount" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
