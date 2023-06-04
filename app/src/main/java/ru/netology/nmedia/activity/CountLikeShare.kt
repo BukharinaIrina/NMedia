@@ -1,4 +1,4 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.activity
 
 import kotlin.math.floor
 import kotlin.math.roundToLong
@@ -25,7 +25,6 @@ object CountLikeShare {
                     floor(value.toDouble() / 100) / 10
                 }
             }
-
             in 10_000..999_999 -> floor(value.toDouble() / 1_000).roundToLong()
             in 1_000_000..999_999_999 -> {
                 if ((((floor(value.toDouble() / 100_000).roundToLong()) % 10) == 0L)) {
@@ -34,7 +33,6 @@ object CountLikeShare {
                     floor(value.toDouble() / 100_000) / 10
                 }
             }
-
             else -> 0
         }
         return count.toString() + prefixToCount(value)
