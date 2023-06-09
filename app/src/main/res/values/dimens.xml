@@ -2,6 +2,7 @@
 <resources>
     <dimen name="common_spacing">16dp</dimen>
     <dimen name="post_avatar_size">48dp</dimen>
-    <dimen name="indent_size">4dp</dimen>
+    <dimen name="indent_size_small">4dp</dimen>
     <dimen name="icons_size">24dp</dimen>
+    <dimen name="indent_size_big">8dp</dimen>
 </resources>
