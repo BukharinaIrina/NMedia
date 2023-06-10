@@ -11,4 +11,6 @@
     <string name="post_text">Ввод текста</string>
     <string name="error_empty_content">Контент не может быть пустым</string>
     <string name="options_post_edit">Редактировать</string>
+    <string name="cancel">отменить</string>
+    <string name="edit_message">Редактирование</string>
 </resources>
