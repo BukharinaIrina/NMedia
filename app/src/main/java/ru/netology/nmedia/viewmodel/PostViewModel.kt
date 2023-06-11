@@ -18,7 +18,7 @@ private val empty = Post(
     views = 0
 )
 
-class PostViewModel: ViewModel() {
+class PostViewModel : ViewModel() {
 
     private val repository: PostRepository = PostRepositoryInMemoryImpl()
     val data = repository.getAll()
@@ -41,6 +41,11 @@ class PostViewModel: ViewModel() {
             edited.value = edited.value?.copy(content = text)
         }
     }
+
+    fun cancelEditing() {
+        edited.value = empty
+    }
+
     fun likeById(id: Long) = repository.likeById(id)
     fun shareById(id: Long) = repository.shareById(id)
     fun removeById(id: Long) = repository.removeById(id)
