@@ -2,6 +2,7 @@ package ru.netology.nmedia.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import ru.netology.nmedia.R
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onEdit(post: Post) {
             viewModel.edit(post)
+            binding.group.visibility = View.VISIBLE
         }
     }
 
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.group.visibility = View.GONE
 
         val adapter = PostsAdapter(interactionListener)
         binding.list.adapter = adapter
@@ -53,6 +56,9 @@ class MainActivity : AppCompatActivity() {
                 with(binding.content) {
                     requestFocus()
                     setText(post.content)
+                }
+                with(binding.textPost) {
+                    text = post.content
                 }
             }
         }
@@ -71,7 +77,17 @@ class MainActivity : AppCompatActivity() {
                     setText("")
                     clearFocus()
                     AndroidUtils.hideKeyboard(this)
+                    binding.group.visibility = View.GONE
                 }
+            }
+        }
+
+        binding.cancelButton.setOnClickListener {
+            with(binding.content) {
+                setText("")
+                clearFocus()
+                AndroidUtils.hideKeyboard(this)
+                binding.group.visibility = View.GONE
             }
         }
     }

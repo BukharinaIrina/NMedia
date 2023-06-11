@@ -11,14 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/toolsTop"
+        app:layout_constraintBottom_toTopOf="@id/editBarrier"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         tools:layout_editor_absoluteX="16dp"
         tools:listitem="@layout/card_post" />
 
     <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/toolsTop"
+        android:id="@+id/saveBarrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
@@ -28,6 +28,7 @@
         android:id="@+id/content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:autoLink="all"
         android:background="@android:color/transparent"
         android:hint="@string/post_text"
         android:importantForAutofill="no"
@@ -36,7 +37,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/saveButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/toolsTop" />
+        app:layout_constraintTop_toTopOf="@id/saveBarrier" />
 
     <ImageButton
         android:id="@+id/saveButton"
@@ -50,4 +51,70 @@
         app:layout_constraintStart_toEndOf="@id/content"
         app:srcCompat="@drawable/ic_save_48" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/editBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="editImage, editMessage, cancelButton" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="editImage, editMessage, textPost, cancelButton"
+        app:layout_constraintBottom_toTopOf="@id/saveBarrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editBarrier" />
+
+    <ImageView
+        android:id="@+id/editImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editBarrier"
+        app:srcCompat="@drawable/ic_edit_48"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/editMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/indent_size_big"
+        android:layout_marginEnd="@dimen/indent_size_big"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/edit_message"
+        android:textColor="@color/blue"
+        app:layout_constraintBottom_toTopOf="@id/textPost"
+        app:layout_constraintEnd_toStartOf="@id/cancelButton"
+        app:layout_constraintStart_toEndOf="@id/editImage"
+        app:layout_constraintTop_toBottomOf="@id/editBarrier" />
+
+    <TextView
+        android:id="@+id/textPost"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/indent_size_big"
+        android:layout_marginEnd="@dimen/indent_size_big"
+        android:autoLink="all"
+        app:layout_constraintBottom_toTopOf="@id/saveBarrier"
+        app:layout_constraintEnd_toStartOf="@id/cancelButton"
+        app:layout_constraintStart_toEndOf="@id/editImage"
+        app:layout_constraintTop_toBottomOf="@id/editMessage" />
+
+    <ImageButton
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/cancel"
+        app:layout_constraintBottom_toTopOf="@id/saveBarrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_cancel_48" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
