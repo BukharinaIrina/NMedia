@@ -15,9 +15,7 @@ import ru.netology.nmedia.viewmodel.PostViewModel
 class MainActivity : AppCompatActivity() {
     val viewModel: PostViewModel by viewModels()
 
-    private var _binding: ActivityMainBinding? = null
-    private val binding: ActivityMainBinding
-        get() = _binding!!
+    private lateinit var binding: ActivityMainBinding
 
     private val interactionListener: OnInteractionListener = object : OnInteractionListener {
         override fun onLike(post: Post) {
@@ -40,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.group.visibility = View.GONE
@@ -48,7 +46,10 @@ class MainActivity : AppCompatActivity() {
         val adapter = PostsAdapter(interactionListener)
         binding.list.adapter = adapter
         viewModel.data.observe(this) { posts ->
-            adapter.submitList(posts)
+            val newPost = adapter.itemCount < posts.size
+            adapter.submitList(posts) {
+                if (newPost) binding.list.smoothScrollToPosition(0)
+            }
         }
 
         viewModel.edited.observe(this) { post ->
@@ -84,6 +85,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.cancelButton.setOnClickListener {
             with(binding.content) {
+                viewModel.cancelEditing()
                 setText("")
                 clearFocus()
                 AndroidUtils.hideKeyboard(this)
