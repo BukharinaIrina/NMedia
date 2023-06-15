@@ -35,33 +35,26 @@ class PostsAdapter(
 class PostViewHolder(
     private val binding: CardPostBinding,
     private val onInteractionListener: OnInteractionListener
-    ) : RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
         binding.apply {
             author.text = post.author
             published.text = post.published
             content.text = post.content
 
-            if (post.likedByMe) {
-                likeButton.setImageResource(R.drawable.ic_liked_24)
-            } else {
-                likeButton.setImageResource(R.drawable.ic_like_24)
-            }
-            likeCount.text = CountLikeShare.counter(post.likes)
+            likeButton.isChecked = post.likedByMe
+            likeButton.text = CountLikeShare.counter(post.likes)
 
-            if (post.shareByMe) {
-                shareButton.setImageResource(R.drawable.ic_share_24)
-            }
-            shareCount.text = CountLikeShare.counter(post.shares)
+            shareButton.text = CountLikeShare.counter(post.shares)
 
-            viewsCount.text = CountLikeShare.counter(post.views)
+            viewsButton.text = CountLikeShare.counter(post.views)
 
             likeButton.setOnClickListener {
-               onInteractionListener.onLike(post)
+                onInteractionListener.onLike(post)
             }
 
             shareButton.setOnClickListener {
-               onInteractionListener.onShare(post)
+                onInteractionListener.onShare(post)
             }
 
             menuButton.setOnClickListener {
@@ -73,10 +66,12 @@ class PostViewHolder(
                                 onInteractionListener.onRemove(post)
                                 true
                             }
+
                             R.id.edit -> {
                                 onInteractionListener.onEdit(post)
                                 true
                             }
+
                             else -> false
                         }
                     }

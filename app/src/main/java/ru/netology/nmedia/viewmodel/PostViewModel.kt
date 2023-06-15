@@ -11,10 +11,9 @@ private val empty = Post(
     author = "",
     published = "",
     content = "",
-    likes = 0,
     likedByMe = false,
+    likes = 0,
     shares = 0,
-    shareByMe = false,
     views = 0
 )
 
