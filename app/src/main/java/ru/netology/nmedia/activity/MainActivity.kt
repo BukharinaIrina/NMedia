@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -77,16 +78,24 @@ class MainActivity : AppCompatActivity() {
                 if (newPost) binding.list.smoothScrollToPosition(0)
             }
         }
-    }
 
-    override fun onBackPressed() {
-        AlertDialog.Builder(this).apply {
-            setTitle(getString(R.string.confirmation))
-            setMessage(getString(R.string.exit_the_program))
-            setPositiveButton(getString(R.string.yes)) { _, _ -> super.onBackPressed() }
-            setNegativeButton(getString(R.string.no)) { _, _ -> }
-            setCancelable(true)
-        }.create().show()
+        val mainActivity = this
+        mainActivity.onBackPressedDispatcher.addCallback(
+            mainActivity, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    AlertDialog.Builder(mainActivity).apply {
+                        setTitle(getString(R.string.confirmation))
+                        setMessage(getString(R.string.exit_the_program))
+                        setPositiveButton(getString(R.string.yes)) { _, _ ->
+                            setResult(RESULT_CANCELED, intent)
+                            finish()
+                        }
+                        setNegativeButton(getString(R.string.no)) { _, _ -> }
+                        setCancelable(true)
+                    }.create().show()
+                }
+            }
+        )
     }
 }
 
