@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.ActivityNewPostBinding
 
@@ -27,9 +28,19 @@ class NewPostActivity : AppCompatActivity() {
             } else {
                 val content = binding.addPost.text.toString()
                 intent.putExtra(Intent.EXTRA_TEXT, content)
-                setResult(Activity.RESULT_OK, intent)
+                setResult(RESULT_OK, intent)
             }
             finish()
         }
+    }
+
+    override fun onBackPressed() {
+        AlertDialog.Builder(this).apply {
+            setTitle(getString(R.string.confirmation))
+            setMessage(getString(R.string.exit_post_save_mode))
+            setPositiveButton(getString(R.string.yes)) { _, _ -> super.onBackPressed() }
+            setNegativeButton(getString(R.string.no)) { _, _ -> }
+            setCancelable(true)
+        }.create().show()
     }
 }

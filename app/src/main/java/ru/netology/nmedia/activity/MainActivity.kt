@@ -1,10 +1,12 @@
 package ru.netology.nmedia.activity
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.result.launch
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
@@ -60,6 +62,11 @@ class MainActivity : AppCompatActivity() {
                 viewModel.edit(post)
                 editPostLauncher.launch(post.content)
             }
+
+            override fun onVideo(post: Post) {
+                val videoIntent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
+                startActivity(videoIntent)
+            }
         }
 
         val adapter = PostsAdapter(interactionListener)
@@ -70,6 +77,16 @@ class MainActivity : AppCompatActivity() {
                 if (newPost) binding.list.smoothScrollToPosition(0)
             }
         }
+    }
+
+    override fun onBackPressed() {
+        AlertDialog.Builder(this).apply {
+            setTitle(getString(R.string.confirmation))
+            setMessage(getString(R.string.exit_the_program))
+            setPositiveButton(getString(R.string.yes)) { _, _ -> super.onBackPressed() }
+            setNegativeButton(getString(R.string.no)) { _, _ -> }
+            setCancelable(true)
+        }.create().show()
     }
 }
 
