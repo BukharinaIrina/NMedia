@@ -33,23 +33,5 @@ class NewPostActivity : AppCompatActivity() {
             }
             finish()
         }
-
-        val newPostActivity = this
-        newPostActivity.onBackPressedDispatcher.addCallback(
-            newPostActivity, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    AlertDialog.Builder(newPostActivity).apply {
-                        setTitle(getString(R.string.confirmation))
-                        setMessage(getString(R.string.exit_post_save_mode))
-                        setPositiveButton(getString(R.string.yes)) { _, _ ->
-                            setResult(RESULT_CANCELED, intent)
-                            finish()
-                        }
-                        setNegativeButton(getString(R.string.no)) { _, _ -> }
-                        setCancelable(true)
-                    }.create().show()
-                }
-            }
-        )
     }
 }

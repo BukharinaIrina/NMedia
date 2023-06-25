@@ -83,13 +83,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/video"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_video"
-        android:contentDescription="@string/video"
-        app:layout_constraintTop_toBottomOf="@+id/content"
         app:layout_constraintBottom_toTopOf="@id/bottomBarrier"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/content" />
 
     <ImageButton
         android:id="@+id/play"
