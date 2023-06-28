@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
-import ru.netology.nmedia.activity.CountLikeShare
+import ru.netology.nmedia.util.CountLikeShare
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 
@@ -18,6 +18,7 @@ interface OnInteractionListener {
     fun onRemove(post: Post) {}
     fun onEdit(post: Post) {}
     fun onVideo(post: Post) {}
+    fun onRoot(post: Post) {}
 }
 
 class PostsAdapter(
@@ -46,31 +47,29 @@ class PostViewHolder(
 
             likeButton.isChecked = post.likedByMe
             likeButton.text = CountLikeShare.counter(post.likes)
-
-            shareButton.text = CountLikeShare.counter(post.shares)
-
-            viewsButton.text = CountLikeShare.counter(post.views)
-
             likeButton.setOnClickListener {
                 onInteractionListener.onLike(post)
             }
 
+            shareButton.text = CountLikeShare.counter(post.shares)
             shareButton.setOnClickListener {
                 onInteractionListener.onShare(post)
             }
+
+            viewsButton.text = CountLikeShare.counter(post.views)
 
             menuButton.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.options_post)
                     setOnMenuItemClickListener { item ->
                         when (item.itemId) {
-                            R.id.remove -> {
-                                onInteractionListener.onRemove(post)
+                            R.id.edit -> {
+                                onInteractionListener.onEdit(post)
                                 true
                             }
 
-                            R.id.edit -> {
-                                onInteractionListener.onEdit(post)
+                            R.id.remove -> {
+                                onInteractionListener.onRemove(post)
                                 true
                             }
 
@@ -85,9 +84,10 @@ class PostViewHolder(
             } else {
                 binding.playVideoGroup.visibility = View.VISIBLE
             }
-
             play.setOnClickListener { onInteractionListener.onVideo(post) }
             video.setOnClickListener { onInteractionListener.onVideo(post) }
+
+            root.setOnClickListener { onInteractionListener.onRoot(post) }
         }
     }
 }

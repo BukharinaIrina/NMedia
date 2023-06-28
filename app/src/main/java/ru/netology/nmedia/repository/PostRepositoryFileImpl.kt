@@ -15,20 +15,13 @@ class PostRepositoryFileImpl(private val context: Context) : PostRepository {
     private var posts = emptyList<Post>()
     private val data = MutableLiveData(posts)
 
-    private var idFirst = 0L
-
     init {
         val file = context.filesDir.resolve(filename)
         if (file.exists()) {
-            context.openFileInput(filename).bufferedReader().use {
+            context.openFileInput(filename).bufferedReader().use { it ->
                 posts = gson.fromJson(it, type)
+                nextId = posts.maxOfOrNull { it.id }?.inc() ?: 1
                 data.value = posts
-            }
-            //для правильной нумерации новых постов,
-            //созданных после выхода и последующего входа в приложение,
-            //и корректного удаления постов
-            if (posts.isNotEmpty()) {
-                idFirst = posts.first().id
             }
         } else {
             sync()
@@ -41,7 +34,7 @@ class PostRepositoryFileImpl(private val context: Context) : PostRepository {
         if (post.id == 0L) {
             posts = listOf(
                 post.copy(
-                    id = (nextId++) + idFirst,
+                    id = nextId++,
                     author = "Me",
                     published = "now",
                     likedByMe = false,
@@ -49,6 +42,7 @@ class PostRepositoryFileImpl(private val context: Context) : PostRepository {
                     shares = 0L,
                     views = 0L,
                     video = null
+//                    video = "https://www.youtube.com/watch?v=WhWc3b3KhnY"
                 )
             ) + posts
             data.value = posts

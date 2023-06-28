@@ -14,11 +14,6 @@
     <string name="cancel">cancel</string>
     <string name="chooser_share_post">Share post</string>
     <string name="add_post">Add post</string>
-    <string name="confirmation">Confirmation</string>
-    <string name="exit_post_editing_mode">Exit post editing mode</string>
-    <string name="exit_the_program">Exit the program</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="video">video</string>
     <string name="play_video">play video</string>
 </resources>
