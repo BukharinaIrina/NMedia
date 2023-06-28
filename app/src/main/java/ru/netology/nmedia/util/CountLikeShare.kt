@@ -1,4 +1,4 @@
-package ru.netology.nmedia.activity
+package ru.netology.nmedia.util
 
 import kotlin.math.floor
 import kotlin.math.roundToLong
