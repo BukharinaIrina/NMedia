@@ -6,14 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.EditPostFragment.Companion.textArg
+import ru.netology.nmedia.adapter.OnInteractionListener
+import ru.netology.nmedia.adapter.PostViewHolder
 import ru.netology.nmedia.databinding.FragmentPostBinding
-import ru.netology.nmedia.util.CountLikeShare
+import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.util.LongProperty
 import ru.netology.nmedia.viewmodel.PostViewModel
 
@@ -33,73 +34,50 @@ class PostFragment : Fragment() {
             binding.postFragment.apply {
                 posts.map { post ->
                     if (post.id == id) {
-                        author.text = post.author
-                        published.text = post.published
-                        content.text = post.content
+                        PostViewHolder(this, object : OnInteractionListener {
 
-                        likeButton.isChecked = post.likedByMe
-                        likeButton.text = CountLikeShare.counter(post.likes)
-                        likeButton.setOnClickListener {
-                            viewModel.likeById(post.id)
-                        }
-
-                        shareButton.text = CountLikeShare.counter(post.shares)
-                        shareButton.setOnClickListener {
-                            viewModel.shareById(post.id)
-                            val intent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, post.content)
-                                type = "text/plain"
+                            override fun onLike(post: Post) {
+                                viewModel.likeById(post.id)
                             }
-                            val shareIntent =
-                                Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                            startActivity(shareIntent)
-                        }
 
-                        viewsButton.text = CountLikeShare.counter(post.views)
-
-                        menuButton.setOnClickListener {
-                            PopupMenu(it.context, it).apply {
-                                inflate(R.menu.options_post)
-                                setOnMenuItemClickListener { item ->
-                                    when (item.itemId) {
-                                        R.id.edit -> {
-                                            viewModel.edit(post)
-                                            findNavController()
-                                                .navigate(R.id.action_postFragment_to_editPostFragment,
-                                                    Bundle().apply {
-                                                        textArg = post.content
-                                                    }
-                                                )
-                                            true
-                                        }
-
-                                        R.id.remove -> {
-                                            viewModel.removeById(post.id)
-                                            findNavController()
-                                                .navigate(R.id.action_postFragment_to_feedFragment)
-                                            true
-                                        }
-
-                                        else -> false
-                                    }
+                            override fun onShare(post: Post) {
+                                viewModel.shareById(post.id)
+                                val intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, post.content)
+                                    type = "text/plain"
                                 }
-                            }.show()
-                        }
+                                val shareIntent =
+                                    Intent.createChooser(
+                                        intent,
+                                        getString(R.string.chooser_share_post)
+                                    )
+                                startActivity(shareIntent)
+                            }
 
-                        if (post.video == null) {
-                            binding.postFragment.playVideoGroup.visibility = View.GONE
-                        } else {
-                            binding.postFragment.playVideoGroup.visibility = View.VISIBLE
-                        }
-                        play.setOnClickListener {
-                            val videoIntent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
-                            startActivity(videoIntent)
-                        }
-                        video.setOnClickListener {
-                            val videoIntent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
-                            startActivity(videoIntent)
-                        }
+                            override fun onRemove(post: Post) {
+                                viewModel.removeById(post.id)
+                                findNavController().navigate(
+                                    R.id.action_postFragment_to_feedFragment
+                                )
+                            }
+
+                            override fun onEdit(post: Post) {
+                                viewModel.edit(post)
+                                findNavController().navigate(
+                                    R.id.action_postFragment_to_editPostFragment,
+                                    Bundle().apply {
+                                        textArg = post.content
+                                    }
+                                )
+                            }
+
+                            override fun onVideo(post: Post) {
+                                val videoIntent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
+                                startActivity(videoIntent)
+                            }
+
+                        }).bind(post)
                     }
                 }
             }

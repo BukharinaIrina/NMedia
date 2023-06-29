@@ -16,4 +16,9 @@
     <string name="add_post">Создать пост</string>
     <string name="video">видео</string>
     <string name="play_video">старт видео</string>
+    <string name="confirmation">Подтверждение</string>
+    <string name="exit_the_program">Выйти из программы</string>
+    <string name="exit_post_editing_mode">Выйти из режима редактирования</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 </resources>
