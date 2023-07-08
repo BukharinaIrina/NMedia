@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
@@ -33,6 +34,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KaptGenerateStubs).configureEach {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
 }
 
 dependencies {
@@ -49,6 +55,7 @@ dependencies {
     def junit_version = "4.13.2"
     def ext_junit_version = "1.1.5"
     def espresso_core_version = "3.5.1"
+    def room_ver = "2.5.2"
 
     implementation "androidx.core:core-ktx:$core_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
@@ -62,7 +69,8 @@ dependencies {
     implementation "com.google.code.gson:gson:$gson_version"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-
+    implementation "androidx.room:room-runtime:$room_ver"
+    kapt "androidx.room:room-compiler:$room_ver"
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"

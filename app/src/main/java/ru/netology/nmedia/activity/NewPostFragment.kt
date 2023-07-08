@@ -20,8 +20,6 @@ import java.io.File
 class NewPostFragment : Fragment() {
 
     private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
-    private val file = File(context?.filesDir, "Draft.txt")
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,8 +27,13 @@ class NewPostFragment : Fragment() {
     ): View {
         val binding = FragmentNewPostBinding.inflate(layoutInflater, container, false)
 
-        binding.addPost.setText(readText())
-        writeText("")
+        val file = File(context?.filesDir, "Draft.txt")
+        if (file.exists()) {
+            binding.addPost.setText(readText())
+            writeText("")
+        } else {
+            file.createNewFile()
+        }
 
         arguments?.textArg?.let {
             binding.addPost.setText(it)
