@@ -21,4 +21,10 @@
     <string name="exit_post_editing_mode">Выйти из режима редактирования</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="channel_remote_name">Уведомления с сервера</string>
+    <string name="channel_remote_description">Уведомления с удалённого сервера</string>
+    <string name="notification_user_liked">%1$s поставил лайк посту %2$s</string>
+    <string name="google_play_unavailable">Google Api Недоступно</string>
+    <string name="notification_user_new_posted">"%1$s опубликовал новый пост "</string>
+    <string name="error_action_title">Ошибка</string>
 </resources>
