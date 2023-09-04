@@ -30,7 +30,7 @@ class PostFragment : Fragment() {
         val binding = FragmentPostBinding.inflate(layoutInflater, container, false)
         val id = arguments?.idArg
 
-        viewModel.data.observe(viewLifecycleOwner) { posts ->
+/*        viewModel.data.observe(viewLifecycleOwner) { posts ->
             binding.postFragment.apply {
                 posts.map { post ->
                     if (post.id == id) {
@@ -81,7 +81,7 @@ class PostFragment : Fragment() {
                     }
                 }
             }
-        }
+        }*/
         return binding.root
     }
 
