@@ -26,4 +26,7 @@
     <string name="google_play_unavailable">Google Api Unavailable</string>
     <string name="notification_user_new_posted">%1$s posted a new post</string>
     <string name="error_action_title">Error</string>
+    <string name="error_loading">Error loading</string>
+    <string name="retry_loading">Retry loading</string>
+    <string name="empty_posts">Empty posts</string>
 </resources>

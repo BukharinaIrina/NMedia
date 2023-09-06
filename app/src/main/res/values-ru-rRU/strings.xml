@@ -27,4 +27,7 @@
     <string name="google_play_unavailable">Google Api Недоступно</string>
     <string name="notification_user_new_posted">"%1$s опубликовал новый пост "</string>
     <string name="error_action_title">Ошибка</string>
+    <string name="error_loading">Ошибка сети</string>
+    <string name="retry_loading">Повторить загрузку</string>
+    <string name="empty_posts">Пустой список</string>
 </resources>
