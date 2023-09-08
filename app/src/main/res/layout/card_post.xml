@@ -12,10 +12,10 @@
         android:layout_width="@dimen/post_avatar_size"
         android:layout_height="@dimen/post_avatar_size"
         android:contentDescription="@string/avatar"
-        android:src="@drawable/post_avatar_48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@sample/posts_avatars" />
+    <!--android:src="@drawable/post_avatar_48dp"-->
 
     <TextView
         android:id="@+id/author"
@@ -84,11 +84,11 @@
         android:adjustViewBounds="true"
         android:contentDescription="@string/video"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_video"
         app:layout_constraintBottom_toTopOf="@id/bottomBarrier"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/content" />
+        <!--android:src="@drawable/ic_video"-->
 
     <ImageButton
         android:id="@+id/play"

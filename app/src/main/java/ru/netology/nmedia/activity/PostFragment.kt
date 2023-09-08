@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import okhttp3.internal.wait
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.EditPostFragment.Companion.textArg
 import ru.netology.nmedia.adapter.OnInteractionListener
@@ -30,14 +31,19 @@ class PostFragment : Fragment() {
         val binding = FragmentPostBinding.inflate(layoutInflater, container, false)
         val id = arguments?.idArg
 
-/*        viewModel.data.observe(viewLifecycleOwner) { posts ->
+        viewModel.data.observe(viewLifecycleOwner) { state ->
             binding.postFragment.apply {
-                posts.map { post ->
+                state.posts.map { post ->
                     if (post.id == id) {
                         PostViewHolder(this, object : OnInteractionListener {
 
                             override fun onLike(post: Post) {
-                                viewModel.likeById(post.id)
+                                if (post.likedByMe) {
+                                    viewModel.unlikeById(post.id)
+                                } else {
+                                    viewModel.likeById(post.id)
+                                }
+                                viewModel.loadPosts()
                             }
 
                             override fun onShare(post: Post) {
@@ -81,7 +87,7 @@ class PostFragment : Fragment() {
                     }
                 }
             }
-        }*/
+        }
         return binding.root
     }
 
