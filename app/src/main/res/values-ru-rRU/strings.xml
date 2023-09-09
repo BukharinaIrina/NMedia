@@ -30,4 +30,5 @@
     <string name="error_loading">Ошибка сети</string>
     <string name="retry_loading">Повторить загрузку</string>
     <string name="empty_posts">Пустой список</string>
+    <string name="description_post_attachment">вложение</string>
 </resources>

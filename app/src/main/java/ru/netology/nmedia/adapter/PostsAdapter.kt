@@ -7,10 +7,13 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.request.RequestOptions
 import ru.netology.nmedia.R
-import ru.netology.nmedia.util.CountLikeShare
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.util.CountLikeShare
+import ru.netology.nmedia.util.load
+
 
 interface OnInteractionListener {
     fun onLike(post: Post) {}
@@ -42,8 +45,21 @@ class PostViewHolder(
     fun bind(post: Post) {
         binding.apply {
             author.text = post.author
-            published.text = post.published
             content.text = post.content
+            published.text = post.published
+
+            val options = RequestOptions().circleCrop()
+            val url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
+            avatar.load(url, options)
+
+            attachment.visibility = View.GONE
+            val urlAttachment = "http://10.0.2.2:9999/images/${post.attachment?.url}"
+            if (post.attachment != null) {
+                attachment.visibility = View.VISIBLE
+                attachment.load(urlAttachment)
+            } else {
+                attachment.visibility = View.GONE
+            }
 
             likeButton.isChecked = post.likedByMe
             likeButton.text = CountLikeShare.counter(post.likes)
@@ -79,13 +95,13 @@ class PostViewHolder(
                 }.show()
             }
 
-            if (post.video == null) {
+            /*if (post.video == null) {
                 binding.playVideoGroup.visibility = View.GONE
             } else {
                 binding.playVideoGroup.visibility = View.VISIBLE
             }
             play.setOnClickListener { onInteractionListener.onVideo(post) }
-            video.setOnClickListener { onInteractionListener.onVideo(post) }
+            video.setOnClickListener { onInteractionListener.onVideo(post) }*/
 
             root.setOnClickListener { onInteractionListener.onRoot(post) }
         }

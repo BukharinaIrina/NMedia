@@ -19,6 +19,7 @@ private val empty = Post(
     published = "",
     likedByMe = false,
     likes = 0L,
+    attachment = null,
 //    shares = 0L,
 //    views = 0L,
 //    video = null
