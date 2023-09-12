@@ -15,7 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@sample/posts_avatars" />
-    <!--android:src="@drawable/post_avatar_48dp"-->
 
     <TextView
         android:id="@+id/author"
@@ -71,7 +70,20 @@
         app:layout_constraintTop_toBottomOf="@id/topBarrier"
         tools:text="@sample/posts.json/data/content" />
 
-    <androidx.constraintlayout.widget.Group
+    <ImageView
+        android:id="@+id/attachment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_spacing"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/description_post_attachment"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottomBarrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/content" />
+
+    <!--<androidx.constraintlayout.widget.Group
         android:id="@+id/playVideoGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -84,11 +96,11 @@
         android:adjustViewBounds="true"
         android:contentDescription="@string/video"
         android:scaleType="fitCenter"
+        android:src="@drawable/ic_video"
         app:layout_constraintBottom_toTopOf="@id/bottomBarrier"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/content" />
-        <!--android:src="@drawable/ic_video"-->
 
     <ImageButton
         android:id="@+id/play"
@@ -100,7 +112,7 @@
         app:layout_constraintBottom_toBottomOf="@id/video"
         app:layout_constraintEnd_toEndOf="@id/video"
         app:layout_constraintStart_toStartOf="@id/video"
-        app:layout_constraintTop_toTopOf="@id/video" />
+        app:layout_constraintTop_toTopOf="@id/video" />-->
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/bottomBarrier"
