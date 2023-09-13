@@ -64,6 +64,7 @@ class PostViewHolder(
             likeButton.isChecked = post.likedByMe
             likeButton.text = CountLikeShare.counter(post.likes)
             likeButton.setOnClickListener {
+                likeButton.isChecked = !likeButton.isChecked
                 onInteractionListener.onLike(post)
             }
 
