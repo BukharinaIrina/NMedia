@@ -93,22 +93,28 @@ class FeedFragment : Fragment() {
         binding.list.adapter = adapter
         viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.posts)
-            binding.progress.isVisible = state.loading
-            binding.errorGroup.isVisible = state.error
             binding.emptyText.isVisible = state.empty
+        }
+
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            binding.progress.isVisible = state.loading
             binding.swipeRefresh.isRefreshing = state.refreshing
 
             if (state.error) {
                 Snackbar.make(
                     binding.root,
-                    state.errorMessage,
+                    R.string.error_loading,
                     BaseTransientBottomBar.LENGTH_LONG
-                ).show()
+                ).setAction(R.string.retry_loading)
+                {
+                    viewModel.loadPosts()
+                }
+                    .show()
             }
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.loadPosts()
+            viewModel.refreshPosts()
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(
