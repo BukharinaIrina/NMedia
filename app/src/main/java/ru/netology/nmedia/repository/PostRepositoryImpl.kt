@@ -1,138 +1,99 @@
 package ru.netology.nmedia.repository
 
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.netology.nmedia.api.PostApi
+import androidx.lifecycle.map
+import ru.netology.nmedia.api.PostsApi
+import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dto.Post
-import kotlin.RuntimeException
+import ru.netology.nmedia.entity.PostEntity
+import ru.netology.nmedia.entity.toDto
+import ru.netology.nmedia.entity.toEntity
+import ru.netology.nmedia.error.ApiException
+import ru.netology.nmedia.error.NetworkException
+import ru.netology.nmedia.error.UnknownException
+import java.io.IOException
 
-class PostRepositoryImpl : PostRepository {
+class PostRepositoryImpl(
+    private val dao: PostDao
+) : PostRepository {
 
-    override fun getAllAsync(callback: PostRepository.Callback<List<Post>>) {
-        PostApi.service.getAll()
-            .enqueue(object : Callback<List<Post>> {
-                override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
-                    if (!response.isSuccessful) {
-                        callback.onError(RuntimeException(response.errorBody()?.string()))
-                        return
-                    }
-
-                    callback.onSuccess(response.body() ?: run {
-                        callback.onError(
-                            RuntimeException(
-                                response.errorBody()?.string() + response.code().toString()
-                            )
-                        )
-                        return
-                    })
-                }
-
-                override fun onFailure(call: Call<List<Post>>, t: Throwable) {
-                    callback.onError(RuntimeException(t))
-                }
-            })
+    override val data = dao.getAll().map { it.toDto() }
+    override suspend fun getAll() {
+        try {
+            val response = PostsApi.service.getAll()
+            if (!response.isSuccessful) {
+                throw ApiException(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiException(response.code(), response.message())
+            dao.insert(body.toEntity())
+        } catch (e: ApiException) {
+            throw e
+        } catch (e: IOException) {
+            throw NetworkException
+        } catch (e: Exception) {
+            throw UnknownException
+        }
     }
 
-    override fun saveAsync(post: Post, callback: PostRepository.Callback<Post>) {
-        PostApi.service.savePost(post)
-            .enqueue(object : Callback<Post> {
-                override fun onResponse(call: Call<Post>, response: Response<Post>) {
-                    if (!response.isSuccessful) {
-                        callback.onError(RuntimeException(response.errorBody()?.string()))
-                        return
-                    }
-
-                    callback.onSuccess(response.body() ?: run {
-                        callback.onError(
-                            RuntimeException(
-                                response.errorBody()?.string() + response.code().toString()
-                            )
-                        )
-                        return
-                    })
-                }
-
-                override fun onFailure(call: Call<Post>, t: Throwable) {
-                    callback.onError(RuntimeException(t))
-                }
-            })
+    override suspend fun save(post: Post) {
+        try {
+            val response = PostsApi.service.savePost(post)
+            if (!response.isSuccessful) {
+                throw ApiException(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiException(response.code(), response.message())
+            dao.insert(PostEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkException
+        } catch (e: Exception) {
+            throw UnknownException
+        }
     }
 
-    override fun removeByIdAsync(id: Long, callback: PostRepository.Callback<Unit>) {
-        PostApi.service.deletePost(id)
-            .enqueue(object : Callback<Unit> {
-                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                    if (!response.isSuccessful) {
-                        callback.onError(RuntimeException(response.errorBody()?.string()))
-                        return
-                    }
-
-                    callback.onSuccess(response.body() ?: run {
-                        callback.onError(
-                            RuntimeException(
-                                response.errorBody()?.string() + response.code().toString()
-                            )
-                        )
-                        return
-                    })
-                }
-
-                override fun onFailure(call: Call<Unit>, t: Throwable) {
-                    callback.onError(RuntimeException(t))
-                }
-            })
+    override suspend fun removeById(id: Long) {
+        try {
+            dao.removeById(id)
+            val response = PostsApi.service.deletePost(id)
+            if (!response.isSuccessful) {
+                throw ApiException(response.code(), response.message())
+            }
+        } catch (e: IOException) {
+            throw NetworkException
+        } catch (e: Exception) {
+            throw UnknownException
+        }
     }
 
-    override fun likeByIdAsync(id: Long, callback: PostRepository.Callback<Post>) {
-        PostApi.service.likePost(id)
-            .enqueue(object : Callback<Post> {
-                override fun onResponse(call: Call<Post>, response: Response<Post>) {
-                    if (!response.isSuccessful) {
-                        callback.onError(RuntimeException(response.errorBody()?.string()))
-                        return
-                    }
-
-                    callback.onSuccess(response.body() ?: run {
-                        callback.onError(
-                            RuntimeException(
-                                response.errorBody()?.string() + response.code().toString()
-                            )
-                        )
-                        return
-                    })
-                }
-
-                override fun onFailure(call: Call<Post>, t: Throwable) {
-                    callback.onError(RuntimeException(t))
-                }
-            })
+    override suspend fun likeById(id: Long) {
+        try {
+            dao.likeById(id)
+            val response = PostsApi.service.likePost(id)
+            if (!response.isSuccessful) {
+                throw ApiException(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiException(response.code(), response.message())
+            dao.insert(PostEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkException
+        } catch (e: Exception) {
+            throw UnknownException
+        }
     }
 
-    override fun unlikeByIdAsync(id: Long, callback: PostRepository.Callback<Post>) {
-        PostApi.service.unlikePost(id)
-            .enqueue(object : Callback<Post> {
-                override fun onResponse(call: Call<Post>, response: Response<Post>) {
-                    if (!response.isSuccessful) {
-                        callback.onError(RuntimeException(response.errorBody()?.string()))
-                        return
-                    }
-
-                    callback.onSuccess(response.body() ?: run {
-                        callback.onError(
-                            RuntimeException(
-                                response.errorBody()?.string() + response.code().toString()
-                            )
-                        )
-                        return
-                    })
-                }
-
-                override fun onFailure(call: Call<Post>, t: Throwable) {
-                    callback.onError(RuntimeException(t))
-                }
-            })
+    override suspend fun unlikeById(id: Long) {
+        try {
+            dao.likeById(id)
+            val response = PostsApi.service.unlikePost(id)
+            if (!response.isSuccessful) {
+                throw ApiException(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiException(response.code(), response.message())
+            dao.insert(PostEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkException
+        } catch (e: Exception) {
+            throw UnknownException
+        }
     }
 
-    //override fun shareByIdAsync(id: Long, callback: PostRepository.Callback<Post>) {}
+    //override suspend fun shareById(id: Long) {}
 }

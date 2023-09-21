@@ -1,7 +1,7 @@
 package ru.netology.nmedia.api
 
 import okhttp3.OkHttpClient
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
@@ -20,31 +20,34 @@ private val client = OkHttpClient.Builder()
     .build()
 
 private val retrofit = Retrofit.Builder()
-    .baseUrl(BASE_URL)
     .addConverterFactory(GsonConverterFactory.create())
+    .baseUrl(BASE_URL)
     .client(client)
     .build()
 
-interface PostApiService {
+interface PostsApiService {
 
     @GET("posts")
-    fun getAll(): Call<List<Post>>
+    suspend fun getAll(): Response<List<Post>>
+
+    @GET("posts/{id}")
+    suspend fun getById(@Path("id") id: Long): Response<Post>
 
     @POST("posts")
-    fun savePost(@Body post: Post): Call<Post>
+    suspend fun savePost(@Body post: Post): Response<Post>
 
     @DELETE("posts/{id}")
-    fun deletePost(@Path("id") id: Long): Call<Unit>
+    suspend fun deletePost(@Path("id") id: Long): Response<Unit>
 
     @POST("posts/{id}/likes")
-    fun likePost(@Path("id") id: Long): Call<Post>
+    suspend fun likePost(@Path("id") id: Long): Response<Post>
 
     @DELETE("posts/{id}/likes")
-    fun unlikePost(@Path("id") id: Long): Call<Post>
+    suspend fun unlikePost(@Path("id") id: Long): Response<Post>
 }
 
-object PostApi {
-    val service: PostApiService by lazy {
+object PostsApi {
+    val service: PostsApiService by lazy {
         retrofit.create()
     }
 }
