@@ -11,9 +11,9 @@ import com.bumptech.glide.request.RequestOptions
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.service.Constants.Companion.API_URL
 import ru.netology.nmedia.util.CountLikeShare
 import ru.netology.nmedia.util.load
-
 
 interface OnInteractionListener {
     fun onLike(post: Post) {}
@@ -22,6 +22,7 @@ interface OnInteractionListener {
     fun onEdit(post: Post) {}
     fun onVideo(post: Post) {}
     fun onRoot(post: Post) {}
+    fun onImage(image: String) {}
 }
 
 class PostsAdapter(
@@ -49,16 +50,21 @@ class PostViewHolder(
             published.text = post.published
 
             val options = RequestOptions().circleCrop()
-            val url = "http://10.0.2.2:9999/avatars/${post.authorAvatar}"
+            val url = "${API_URL}/avatars/${post.authorAvatar}"
             avatar.load(url, options)
 
             attachment.visibility = View.GONE
-            val urlAttachment = "http://10.0.2.2:9999/images/${post.attachment?.url}"
+            val urlAttachment = "${API_URL}/media/${post.attachment?.url}"
             if (post.attachment != null) {
                 attachment.visibility = View.VISIBLE
                 attachment.load(urlAttachment)
             } else {
                 attachment.visibility = View.GONE
+            }
+            attachment.setOnClickListener {
+                post.attachment?.let { attachment ->
+                    onInteractionListener.onImage(attachment.url)
+                }
             }
 
             likeButton.isChecked = post.likedByMe

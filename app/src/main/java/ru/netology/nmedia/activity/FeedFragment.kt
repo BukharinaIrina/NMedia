@@ -71,6 +71,7 @@ class FeedFragment : Fragment() {
                     R.id.action_feedFragment_to_editPostFragment,
                     Bundle().apply {
                         textArg = post.content
+                        putString("image", post.attachment?.url)
                     }
                 )
             }
@@ -85,6 +86,15 @@ class FeedFragment : Fragment() {
                     R.id.action_feedFragment_to_postFragment,
                     Bundle().apply {
                         idArg = post.id
+                    }
+                )
+            }
+
+            override fun onImage(image: String) {
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_imageFragment,
+                    Bundle().apply {
+                        putString("image", image)
                     }
                 )
             }
