@@ -17,8 +17,8 @@
     <string name="video">видео</string>
     <string name="play_video">старт видео</string>
     <string name="confirmation">Подтверждение</string>
-    <string name="exit_the_program">Выйти из программы</string>
-    <string name="exit_post_editing_mode">Выйти из режима редактирования</string>
+    <string name="exit_the_program">Выйти из программы?</string>
+    <string name="exit_post_editing_mode">Выйти из режима редактирования?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="channel_remote_name">Уведомления с сервера</string>
@@ -37,4 +37,14 @@
     <string name="description_select_photo">выбрать фото</string>
     <string name="description_take_photo">сделать фото</string>
     <string name="description_image">изображение</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_up">Регистрация</string>
+    <string name="sign_out">Выйти</string>
+    <string name="wrong_password">Неверный пароль</string>
+    <string name="repeat_password">Повторите пароль</string>
+    <string name="name">Имя</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="pass_authorization">Пройти авторизацию?</string>
+    <string name="error_authorization">Ошибка авторизации</string>
 </resources>
