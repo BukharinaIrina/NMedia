@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
@@ -22,11 +23,14 @@ import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 class FeedFragment : Fragment() {
 
     private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
+    private val viewModelAuth: AuthViewModel by viewModels(ownerProducer = ::requireParentFragment)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,18 +39,37 @@ class FeedFragment : Fragment() {
         val binding = FragmentFeedBinding.inflate(layoutInflater, container, false)
 
         binding.addButton.setOnClickListener {
-            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            if (viewModelAuth.authenticated)
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            else
+                MaterialAlertDialogBuilder(requireActivity())
+                    .setTitle(getString(R.string.confirmation))
+                    .setMessage(getString(R.string.pass_authorization))
+                    .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                        findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
+                    }
+                    .setNegativeButton(getString(R.string.no)) { _, _ -> }
+                    .show()
         }
 
         val interactionListener: OnInteractionListener = object : OnInteractionListener {
 
             override fun onLike(post: Post) {
-                if (post.likedByMe) {
-                    viewModel.unlikeById(post.id)
+                if (viewModelAuth.authenticated) {
+                    if (post.likedByMe)
+                        viewModel.unlikeById(post.id)
+                    else
+                        viewModel.likeById(post.id)
                 } else {
-                    viewModel.likeById(post.id)
+                    MaterialAlertDialogBuilder(requireActivity())
+                        .setTitle(getString(R.string.confirmation))
+                        .setMessage(getString(R.string.pass_authorization))
+                        .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                            findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
+                        }
+                        .setNegativeButton(getString(R.string.no)) { _, _ -> }
+                        .show()
                 }
-                viewModel.loadPosts()
             }
 
             override fun onShare(post: Post) {
