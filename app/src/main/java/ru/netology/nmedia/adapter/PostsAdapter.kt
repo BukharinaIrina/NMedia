@@ -12,7 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.service.Constants.Companion.API_URL
+import ru.netology.nmedia.util.Constants.Companion.API_URL
 import ru.netology.nmedia.util.CountLikeShare
 import ru.netology.nmedia.util.load
 

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.databinding.FragmentImageBinding
-import ru.netology.nmedia.service.Constants.Companion.API_URL
+import ru.netology.nmedia.util.Constants.Companion.API_URL
 import ru.netology.nmedia.util.load
 
 class ImageFragment : Fragment() {

@@ -1,4 +1,4 @@
-package ru.netology.nmedia.service
+package ru.netology.nmedia.service.notifications
 
 data class NewPost(
     val postId: Long,

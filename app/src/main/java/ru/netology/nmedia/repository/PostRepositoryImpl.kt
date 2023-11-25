@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
-import ru.netology.nmedia.api.PostsApi
+import ru.netology.nmedia.api.Api
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
@@ -21,6 +21,7 @@ import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nmedia.dto.Attachment
+import ru.netology.nmedia.dto.Token
 import ru.netology.nmedia.dto.TypeAttachment
 import ru.netology.nmedia.model.PhotoModel
 
@@ -36,7 +37,7 @@ class PostRepositoryImpl(
         while (true) {
             try {
                 delay(10_000L)
-                val response = PostsApi.service.getNewer(postId)
+                val response = Api.service.getNewer(postId)
                 if (!response.isSuccessful) {
                     throw ApiException(response.code(), response.message())
                 }
@@ -69,7 +70,7 @@ class PostRepositoryImpl(
 
     override suspend fun getAll() {
         try {
-            val response = PostsApi.service.getAll()
+            val response = Api.service.getAll()
             if (!response.isSuccessful) {
                 throw ApiException(response.code(), response.message())
             }
@@ -89,7 +90,7 @@ class PostRepositoryImpl(
 
     override suspend fun save(post: Post) {
         try {
-            val response = PostsApi.service.savePost(post)
+            val response = Api.service.savePost(post)
             if (!response.isSuccessful) {
                 throw ApiException(response.code(), response.message())
             }
@@ -105,7 +106,7 @@ class PostRepositoryImpl(
     override suspend fun removeById(id: Long) {
         try {
             dao.removeById(id)
-            val response = PostsApi.service.deletePost(id)
+            val response = Api.service.deletePost(id)
             if (!response.isSuccessful) {
                 throw ApiException(response.code(), response.message())
             }
@@ -119,7 +120,7 @@ class PostRepositoryImpl(
     override suspend fun likeById(id: Long) {
         try {
             dao.likeById(id)
-            val response = PostsApi.service.likePost(id)
+            val response = Api.service.likePost(id)
             if (!response.isSuccessful) {
                 throw ApiException(response.code(), response.message())
             }
@@ -138,7 +139,7 @@ class PostRepositoryImpl(
     override suspend fun unlikeById(id: Long) {
         try {
             dao.likeById(id)
-            val response = PostsApi.service.unlikePost(id)
+            val response = Api.service.unlikePost(id)
             if (!response.isSuccessful) {
                 throw ApiException(response.code(), response.message())
             }
@@ -157,7 +158,7 @@ class PostRepositoryImpl(
     override suspend fun saveWithAttachment(post: Post, model: PhotoModel) {
         try {
             val media = upload(model)
-            val response = PostsApi.service.savePost(
+            val response = Api.service.savePost(
                 post.copy(
                     attachment = Attachment(
                         url = media.id,
@@ -182,7 +183,35 @@ class PostRepositoryImpl(
             val media = MultipartBody.Part.createFormData(
                 "file", photoModel.file!!.name, photoModel.file.asRequestBody()
             )
-            val response = PostsApi.service.saveMedia(media)
+            val response = Api.service.saveMedia(media)
+            if (!response.isSuccessful) {
+                throw ApiException(response.code(), response.message())
+            }
+            return response.body() ?: throw ApiException(response.code(), response.message())
+        } catch (e: IOException) {
+            throw NetworkException
+        } catch (e: Exception) {
+            throw UnknownException
+        }
+    }
+
+    override suspend fun authUser(login: String, password: String): Token {
+        try {
+            val response = Api.service.updateUser(login, password)
+            if (!response.isSuccessful) {
+                throw ApiException(response.code(), response.message())
+            }
+            return response.body() ?: throw ApiException(response.code(), response.message())
+        } catch (e: IOException) {
+            throw NetworkException
+        } catch (e: Exception) {
+            throw UnknownException
+        }
+    }
+
+    override suspend fun registrationUser(login: String, password: String, name: String): Token {
+        try {
+            val response = Api.service.registrationUser(login, password, name)
             if (!response.isSuccessful) {
                 throw ApiException(response.code(), response.message())
             }

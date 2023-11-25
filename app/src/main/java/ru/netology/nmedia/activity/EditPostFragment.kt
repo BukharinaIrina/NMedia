@@ -19,7 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentEditPostBinding
-import ru.netology.nmedia.service.Constants.Companion.API_URL
+import ru.netology.nmedia.util.Constants.Companion.API_URL
 import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.util.StringProperty
 import ru.netology.nmedia.util.load
