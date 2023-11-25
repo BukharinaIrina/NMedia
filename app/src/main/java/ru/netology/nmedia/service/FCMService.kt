@@ -16,8 +16,9 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.AppActivity
+import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.service.notifications.*
 import kotlin.random.Random
-
 
 class FCMService : FirebaseMessagingService() {
     private val action = "action"
@@ -27,19 +28,28 @@ class FCMService : FirebaseMessagingService() {
 
     override fun onCreate() {
         super.onCreate()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.channel_remote_name)
-            val descriptionText = getString(R.string.channel_remote_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(channelId, name, importance).apply {
-                description = descriptionText
-            }
-            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel(channel)
+        val name = getString(R.string.channel_remote_name)
+        val descriptionText = getString(R.string.channel_remote_description)
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelId, name, importance).apply {
+            description = descriptionText
         }
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.createNotificationChannel(channel)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
+        val userId = AppAuth.getInstance().authFlow.value?.id
+        val push = gson.fromJson(message.data[content], PushMessage::class.java)
+
+        when (push.recipientId) {
+            userId, null -> {
+                handleNotification(push)
+            }
+
+            else -> AppAuth.getInstance().sendPushToken()
+        }
+
         try {
             message.data[action]?.let {
                 when (Action.valueOf(it)) {
@@ -64,7 +74,30 @@ class FCMService : FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
+        AppAuth.getInstance().sendPushToken(token)
         println(token)
+    }
+
+    private fun handleNotification(push: PushMessage) {
+        val notifyPendingIntent = PendingIntent.getActivity(
+            this, 0, Intent(this, AppActivity::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(
+                getString(
+                    R.string.notification
+                )
+            )
+            .setContentText(
+                push.content
+            )
+            .setAutoCancel(true)
+            .setContentIntent(notifyPendingIntent)
+            .build()
+
+        notify(notification)
     }
 
     private fun handleLike(content: Like) {

@@ -47,4 +47,5 @@
     <string name="password">Пароль</string>
     <string name="pass_authorization">Пройти авторизацию?</string>
     <string name="error_authorization">Ошибка авторизации</string>
+    <string name="notification">Уведомление</string>
 </resources>
