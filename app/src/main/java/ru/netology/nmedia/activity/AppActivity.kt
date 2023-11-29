@@ -9,19 +9,38 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
-import ru.netology.nmedia.databinding.ActivityAppBinding
 import androidx.activity.viewModels
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.messaging.FirebaseMessaging
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.databinding.ActivityAppBinding
 import ru.netology.nmedia.viewmodel.AuthViewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
+@ExperimentalCoroutinesApi
 class AppActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var appAuth: AppAuth
+    @Inject
+    lateinit var firebaseMessaging: FirebaseMessaging
+    @Inject
+    lateinit var googleApiAvailability: GoogleApiAvailability
+
+    private val viewModelAuth: AuthViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityAppBinding.inflate(layoutInflater)
@@ -50,10 +69,8 @@ class AppActivity : AppCompatActivity() {
             )
         }
 
-        val authViewModel by viewModels<AuthViewModel>()
-
         var currentMenuProvider: MenuProvider? = null
-        authViewModel.state.observe(this) {
+        viewModelAuth.state.observe(this) {
             currentMenuProvider?.also(::removeMenuProvider)
 
             addMenuProvider(
@@ -62,8 +79,8 @@ class AppActivity : AppCompatActivity() {
                         menuInflater.inflate(R.menu.auth_menu, menu)
 
                         menu.let {
-                            it.setGroupVisible(R.id.authenticated, authViewModel.authenticated)
-                            it.setGroupVisible(R.id.unauthenticated, !authViewModel.authenticated)
+                            it.setGroupVisible(R.id.authenticated, viewModelAuth.authenticated)
+                            it.setGroupVisible(R.id.unauthenticated, !viewModelAuth.authenticated)
                         }
                     }
 
@@ -84,7 +101,7 @@ class AppActivity : AppCompatActivity() {
                                     .setTitle(getString(R.string.confirmation))
                                     .setMessage(getString(R.string.exit_the_program))
                                     .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                                        AppAuth.getInstance().removeAuth()
+                                        appAuth.removeAuth()
                                     }
                                     .setNegativeButton(getString(R.string.no)) { _, _ -> }
                                     .show()
@@ -100,7 +117,34 @@ class AppActivity : AppCompatActivity() {
             )
         }
 
+        firebaseMessaging.token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                println("some stuff happened: ${task.exception}")
+                return@addOnCompleteListener
+            }
+
+            val token = task.result
+            println(token)
+        }
+
+        checkGoogleApiAvailability()
+
         requestNotificationsPermission()
+    }
+
+    private fun checkGoogleApiAvailability() {
+        with(googleApiAvailability) {
+            val code = isGooglePlayServicesAvailable(this@AppActivity)
+            if (code == ConnectionResult.SUCCESS) {
+                return@with
+            }
+            if (isUserResolvableError(code)) {
+                getErrorDialog(this@AppActivity, code, 9000)?.show()
+                return
+            }
+            Toast.makeText(this@AppActivity, R.string.google_play_unavailable, Toast.LENGTH_LONG)
+                .show()
+        }
     }
 
     private fun requestNotificationsPermission() {

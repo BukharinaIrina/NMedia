@@ -10,12 +10,14 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.activity.PostFragment.Companion.idArg
@@ -26,10 +28,11 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
+@AndroidEntryPoint
+@ExperimentalCoroutinesApi
 class FeedFragment : Fragment() {
-
-    private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
-    private val viewModelAuth: AuthViewModel by viewModels(ownerProducer = ::requireParentFragment)
+    private val viewModel: PostViewModel by activityViewModels()
+    private val viewModelAuth: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
