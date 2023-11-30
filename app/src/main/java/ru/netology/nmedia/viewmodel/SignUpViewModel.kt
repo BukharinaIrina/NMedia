@@ -1,20 +1,20 @@
 package ru.netology.nmedia.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Token
 import ru.netology.nmedia.error.UnknownException
 import ru.netology.nmedia.repository.PostRepository
-import ru.netology.nmedia.repository.PostRepositoryImpl
+import javax.inject.Inject
 
-class SignUpViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: PostRepository =
-        PostRepositoryImpl(AppDb.getInstance(application).postDao())
+@HiltViewModel
+class SignUpViewModel @Inject constructor(
+    private val repository: PostRepository,
+) : ViewModel() {
 
     private val _data = MutableLiveData<Token>()
     val data: LiveData<Token>
