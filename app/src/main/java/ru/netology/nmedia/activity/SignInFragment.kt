@@ -29,7 +29,7 @@ class SignInFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         val binding = FragmentSignInBinding.inflate(inflater, container, false)
 

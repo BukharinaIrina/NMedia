@@ -11,7 +11,7 @@ class AuthViewModel @Inject constructor(
     private val appAuth: AppAuth
 ) : ViewModel() {
 
-    val state = appAuth.authFlow
+    val data = appAuth.authFlow
         .asLiveData()
 
     val authenticated: Boolean

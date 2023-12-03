@@ -34,8 +34,10 @@ class AppActivity : AppCompatActivity() {
 
     @Inject
     lateinit var appAuth: AppAuth
+
     @Inject
     lateinit var firebaseMessaging: FirebaseMessaging
+
     @Inject
     lateinit var googleApiAvailability: GoogleApiAvailability
 
@@ -70,7 +72,7 @@ class AppActivity : AppCompatActivity() {
         }
 
         var currentMenuProvider: MenuProvider? = null
-        viewModelAuth.state.observe(this) {
+        viewModelAuth.data.observe(this) {
             currentMenuProvider?.also(::removeMenuProvider)
 
             addMenuProvider(

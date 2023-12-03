@@ -1,6 +1,6 @@
 package ru.netology.nmedia.activity
 
-import  android.content.Intent
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,13 +11,19 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.activity.PostFragment.Companion.idArg
@@ -128,9 +134,11 @@ class FeedFragment : Fragment() {
 
         val adapter = PostsAdapter(interactionListener)
         binding.list.adapter = adapter
-        viewModel.data.observe(viewLifecycleOwner) { state ->
-            adapter.submitList(state.posts)
-            binding.emptyText.isVisible = state.empty
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.data.collectLatest(adapter::submitData)
+            }
         }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
@@ -150,11 +158,24 @@ class FeedFragment : Fragment() {
             }
         }
 
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.refreshPosts()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                adapter.loadStateFlow.collectLatest { state ->
+                    binding.swipeRefresh.isRefreshing =
+                        state.refresh is LoadState.Loading ||
+                                state.prepend is LoadState.Loading ||
+                                state.append is LoadState.Loading
+                }
+            }
         }
 
-        adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
+        binding.swipeRefresh.setOnRefreshListener(adapter::refresh)
+
+        viewModelAuth.data.observe(viewLifecycleOwner) {
+            adapter.refresh()
+        }
+
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0) {
                     binding.list.smoothScrollToPosition(0)
@@ -163,13 +184,11 @@ class FeedFragment : Fragment() {
         })
 
         binding.newPosts.visibility = View.GONE
-
-        viewModel.newerCount.observe(viewLifecycleOwner) {
+        /*viewModel.newerCount.observe(viewLifecycleOwner) {
             if (it > 0) {
                 binding.newPosts.visibility = View.VISIBLE
             }
-        }
-
+        }*/
         binding.newPosts.setOnClickListener {
             binding.newPosts.visibility = View.GONE
             viewModel.loadNewPosts()

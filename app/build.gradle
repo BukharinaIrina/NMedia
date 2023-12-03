@@ -59,7 +59,7 @@ dependencies {
     def junit_version = "4.13.2"
     def ext_junit_version = "1.1.5"
     def espresso_core_version = "3.5.1"
-    def room_version = "2.6.0"
+    def room_version = "2.6.1"
     def firebase_version = "32.1.1"
     def play_services_base_version = "18.2.0"
     def swipe_refresh_layout_version = "1.1.0"
@@ -68,6 +68,7 @@ dependencies {
     def coroutines_version = "1.7.3"
     def image_picker_version = "2.1"
     def okhttp_version = "4.11.0"
+    def paging_version = "3.2.1"
 
 
     implementation "androidx.core:core-ktx:$core_version"
@@ -98,6 +99,7 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
