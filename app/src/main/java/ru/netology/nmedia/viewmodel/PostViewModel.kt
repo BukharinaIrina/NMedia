@@ -50,8 +50,10 @@ class PostViewModel @Inject constructor(
 
     val data: Flow<PagingData<Post>> = appAuth.authFlow
         .flatMapLatest { token ->
-            repository.data.map { posts ->
-                posts.map { it.copy(ownedByMe = it.authorId == token?.id) }
+            repository.data.map { pagingData ->
+                pagingData.map { post ->
+                    post.copy(ownedByMe = post.authorId == token?.id)
+                }
             }
         }.flowOn(Dispatchers.Default)
 
@@ -76,27 +78,7 @@ class PostViewModel @Inject constructor(
     fun loadPosts() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(loading = true)
-            repository.getAll()
-            _dataState.value = FeedModelState()
-        } catch (e: Exception) {
-            _dataState.value = FeedModelState(error = true)
-        }
-    }
-
-    fun loadNewPosts() = viewModelScope.launch {
-        try {
-            _dataState.value = FeedModelState(loading = true)
-            repository.getNewPosts()
-            _dataState.value = FeedModelState()
-        } catch (e: Exception) {
-            _dataState.value = FeedModelState(error = true)
-        }
-    }
-
-    fun refreshPosts() = viewModelScope.launch {
-        try {
-            _dataState.value = FeedModelState(refreshing = true)
-            repository.getAll()
+            //repository.getAll()
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)
@@ -120,11 +102,6 @@ class PostViewModel @Inject constructor(
             }
         }
     }
-
-    /*val newerCount: LiveData<Int> = data.switchMap {
-        repository.getNewerCount(it.posts.firstOrNull()?.id ?: 0L)
-            .asLiveData(Dispatchers.Default)
-    }*/
 
     fun edit(post: Post) {
         edited.value = post

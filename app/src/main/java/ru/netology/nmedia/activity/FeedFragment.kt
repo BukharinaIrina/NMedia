@@ -16,7 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -47,21 +46,7 @@ class FeedFragment : Fragment() {
     ): View {
         val binding = FragmentFeedBinding.inflate(layoutInflater, container, false)
 
-        binding.addButton.setOnClickListener {
-            if (viewModelAuth.authenticated)
-                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-            else
-                MaterialAlertDialogBuilder(requireActivity())
-                    .setTitle(getString(R.string.confirmation))
-                    .setMessage(getString(R.string.pass_authorization))
-                    .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                        findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
-                    }
-                    .setNegativeButton(getString(R.string.no)) { _, _ -> }
-                    .show()
-        }
-
-        val interactionListener: OnInteractionListener = object : OnInteractionListener {
+        val adapter = PostsAdapter(object : OnInteractionListener {
 
             override fun onLike(post: Post) {
                 if (viewModelAuth.authenticated) {
@@ -82,15 +67,17 @@ class FeedFragment : Fragment() {
             }
 
             override fun onShare(post: Post) {
-                viewModel.shareById(post.id)
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
-                    type = "text/plain"
+                if (viewModelAuth.authenticated) {
+                    viewModel.shareById(post.id)
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, post.content)
+                        type = "text/plain"
+                    }
+                    val shareIntent =
+                        Intent.createChooser(intent, getString(R.string.chooser_share_post))
+                    startActivity(shareIntent)
                 }
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                startActivity(shareIntent)
             }
 
             override fun onRemove(post: Post) {
@@ -114,25 +101,27 @@ class FeedFragment : Fragment() {
             }
 
             override fun onRoot(post: Post) {
-                findNavController().navigate(
-                    R.id.action_feedFragment_to_postFragment,
-                    Bundle().apply {
-                        idArg = post.id
-                    }
-                )
+                if (viewModelAuth.authenticated) {
+                    findNavController().navigate(
+                        R.id.action_feedFragment_to_postFragment,
+                        Bundle().apply {
+                            idArg = post.id
+                        }
+                    )
+                }
             }
 
             override fun onImage(image: String) {
-                findNavController().navigate(
-                    R.id.action_feedFragment_to_imageFragment,
-                    Bundle().apply {
-                        putString("image", image)
-                    }
-                )
+                if (viewModelAuth.authenticated) {
+                    findNavController().navigate(
+                        R.id.action_feedFragment_to_imageFragment,
+                        Bundle().apply {
+                            putString("image", image)
+                        }
+                    )
+                }
             }
-        }
-
-        val adapter = PostsAdapter(interactionListener)
+        })
         binding.list.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -175,23 +164,18 @@ class FeedFragment : Fragment() {
             adapter.refresh()
         }
 
-        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart == 0) {
-                    binding.list.smoothScrollToPosition(0)
-                }
-            }
-        })
-
-        binding.newPosts.visibility = View.GONE
-        /*viewModel.newerCount.observe(viewLifecycleOwner) {
-            if (it > 0) {
-                binding.newPosts.visibility = View.VISIBLE
-            }
-        }*/
-        binding.newPosts.setOnClickListener {
-            binding.newPosts.visibility = View.GONE
-            viewModel.loadNewPosts()
+        binding.addButton.setOnClickListener {
+            if (viewModelAuth.authenticated)
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            else
+                MaterialAlertDialogBuilder(requireActivity())
+                    .setTitle(getString(R.string.confirmation))
+                    .setMessage(getString(R.string.pass_authorization))
+                    .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                        findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
+                    }
+                    .setNegativeButton(getString(R.string.no)) { _, _ -> }
+                    .show()
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(

@@ -131,10 +131,6 @@ class NewPostFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        //для решения проблемы при редактировании поста,
-        //если нет обработки нажатия кнопки назад в EditPostFragment
-        //viewModel.cancelEditing()
-
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
