@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -22,11 +23,15 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.activity.PostFragment.Companion.idArg
+import ru.netology.nmedia.adapter.DateTimeDecoration
 import ru.netology.nmedia.adapter.OnInteractionListener
+import ru.netology.nmedia.adapter.PostLoadingStateAdapter
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
@@ -122,7 +127,18 @@ class FeedFragment : Fragment() {
                 }
             }
         })
-        binding.list.adapter = adapter
+        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = PostLoadingStateAdapter { adapter.retry() },
+            footer = PostLoadingStateAdapter { adapter.retry() }
+        )
+
+        binding.list.addItemDecoration(
+            DateTimeDecoration(
+                resources.getDimensionPixelOffset(R.dimen.date_offset),
+                resources.getDimension(R.dimen.date_text_size),
+                ContextCompat.getColor(requireActivity(), R.color.green),
+            )
+        )
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -151,9 +167,7 @@ class FeedFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 adapter.loadStateFlow.collectLatest { state ->
                     binding.swipeRefresh.isRefreshing =
-                        state.refresh is LoadState.Loading ||
-                                state.prepend is LoadState.Loading ||
-                                state.append is LoadState.Loading
+                        state.refresh is LoadState.Loading
                 }
             }
         }
@@ -162,6 +176,14 @@ class FeedFragment : Fragment() {
 
         viewModelAuth.data.observe(viewLifecycleOwner) {
             adapter.refresh()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            adapter
+                .loadStateFlow
+                .distinctUntilChangedBy { it.source.refresh }
+                .map { it.source.refresh is LoadState.NotLoading }
+                .collectLatest { binding.list.scrollToPosition(0) }
         }
 
         binding.addButton.setOnClickListener {

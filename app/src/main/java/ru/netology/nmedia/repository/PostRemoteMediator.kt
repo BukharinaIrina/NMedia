@@ -33,7 +33,7 @@ class PostRemoteMediator(
                 }
 
                 LoadType.PREPEND -> {
-                    return MediatorResult.Success(true)
+                    return MediatorResult.Success(false)
                 }
 
                 LoadType.APPEND -> {

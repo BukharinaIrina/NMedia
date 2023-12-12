@@ -35,6 +35,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -67,8 +68,10 @@ dependencies {
     def retrofit_version = "2.9.0"
     def coroutines_version = "1.7.3"
     def image_picker_version = "2.1"
-    def okhttp_version = "4.11.0"
+    def okhttp_version = "4.12.0"
     def paging_version = "3.2.1"
+    def hilt_version = "2.49"
+    def desugar_jdk_libs = "2.0.4"
 
 
     implementation "androidx.core:core-ktx:$core_version"
@@ -105,4 +108,5 @@ dependencies {
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar_jdk_libs"
 }
