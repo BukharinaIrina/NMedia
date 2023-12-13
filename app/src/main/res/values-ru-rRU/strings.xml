@@ -47,4 +47,7 @@
     <string name="pass_authorization">Пройти авторизацию?</string>
     <string name="error_authorization">Ошибка авторизации</string>
     <string name="notification">Уведомление</string>
+    <string name="today">Сегодня</string>
+    <string name="yesterday">Вчера</string>
+    <string name="last_week">На прошлой неделе</string>
 </resources>

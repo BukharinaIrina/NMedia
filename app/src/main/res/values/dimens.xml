@@ -5,4 +5,6 @@
     <dimen name="indent_size_small">4dp</dimen>
     <dimen name="icons_size">24dp</dimen>
     <dimen name="indent_size_big">8dp</dimen>
+    <dimen name="date_offset">36dp</dimen>
+    <dimen name="date_text_size">22sp</dimen>
 </resources>

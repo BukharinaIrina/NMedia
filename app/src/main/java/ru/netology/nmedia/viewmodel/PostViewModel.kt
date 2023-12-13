@@ -16,12 +16,14 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.PhotoModel
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.util.SingleLiveEvent
 import java.io.File
+import java.time.OffsetDateTime
 import javax.inject.Inject
 
 private val empty = Post(
@@ -30,7 +32,7 @@ private val empty = Post(
     author = "",
     authorAvatar = "",
     content = "",
-    published = "",
+    published = OffsetDateTime.now(),
     likedByMe = false,
     likes = 0L,
     hidden = false,
@@ -48,11 +50,15 @@ class PostViewModel @Inject constructor(
     appAuth: AppAuth,
 ) : ViewModel() {
 
-    val data: Flow<PagingData<Post>> = appAuth.authFlow
+    val data: Flow<PagingData<FeedItem>> = appAuth.authFlow
         .flatMapLatest { token ->
             repository.data.map { pagingData ->
                 pagingData.map { post ->
-                    post.copy(ownedByMe = post.authorId == token?.id)
+                    if (post is Post) {
+                        post.copy(ownedByMe = post.authorId == token?.id)
+                    } else {
+                        post
+                    }
                 }
             }
         }.flowOn(Dispatchers.Default)
