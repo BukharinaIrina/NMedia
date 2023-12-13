@@ -178,13 +178,13 @@ class FeedFragment : Fragment() {
             adapter.refresh()
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
+        /*viewLifecycleOwner.lifecycleScope.launch {
             adapter
                 .loadStateFlow
                 .distinctUntilChangedBy { it.source.refresh }
                 .map { it.source.refresh is LoadState.NotLoading }
                 .collectLatest { binding.list.scrollToPosition(0) }
-        }
+        }*/
 
         binding.addButton.setOnClickListener {
             if (viewModelAuth.authenticated)
