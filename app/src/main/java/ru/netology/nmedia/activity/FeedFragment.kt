@@ -23,8 +23,6 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
@@ -177,14 +175,6 @@ class FeedFragment : Fragment() {
         viewModelAuth.data.observe(viewLifecycleOwner) {
             adapter.refresh()
         }
-
-        /*viewLifecycleOwner.lifecycleScope.launch {
-            adapter
-                .loadStateFlow
-                .distinctUntilChangedBy { it.source.refresh }
-                .map { it.source.refresh is LoadState.NotLoading }
-                .collectLatest { binding.list.scrollToPosition(0) }
-        }*/
 
         binding.addButton.setOnClickListener {
             if (viewModelAuth.authenticated)
